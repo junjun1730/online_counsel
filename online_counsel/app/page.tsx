@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link"; // Link 컴포넌트 import
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -111,12 +112,20 @@ export default function Home() {
         </div>
 
         {/* 상담 시작 버튼 */}
-        <button
-          onClick={() => alert(`"${currentChar.name}"와 상담을 시작합니다.`)}
-          className="mt-10 mb-8 px-6 py-3 bg-yellow-400 hover:bg-yellow-300 text-black font-bold rounded-xl text-lg"
+        <Link
+          href={`/chat?characterName=${encodeURIComponent(
+            currentChar.name
+          )}&characterImage=${encodeURIComponent(currentChar.image)}`}
+          passHref
         >
-          상담 시작
-        </button>
+          <motion.button
+            className="mt-10 mb-8 px-8 py-4 bg-yellow-400 hover:bg-yellow-300 text-black font-bold rounded-xl text-xl shadow-lg hover:shadow-xl transition-all"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {currentChar.name}와(과) 상담 시작
+          </motion.button>
+        </Link>
       </div>
     </div>
   );
