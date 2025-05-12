@@ -108,7 +108,6 @@ export default function ChatPage() {
     // 전체 컨테이너: 픽셀 스타일 배경, 테두리 등
     <div className="flex flex-col h-screen w-full max-w-2xl mx-auto shadow-2xl border-4 border-black bg-blue-100 overflow-hidden font-pixel">
       <ChatPageHeader
-        characterName={selectedCharacter}
         onShowHistory={() => setShowModal(true)}
         onResetChat={() => {
           setMessages([]); // 메시지 초기화

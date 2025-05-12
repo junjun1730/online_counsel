@@ -4,13 +4,11 @@ import { useState } from "react";
 import Link from "next/link";
 
 type ChatPageHeaderProps = {
-  characterName: string; // 캐릭터 이름 표시용 (선택적)
   onShowHistory: () => void;
   onResetChat: () => void;
 };
 
 export default function ChatPageHeader({
-  characterName, // prop 추가
   onShowHistory,
   onResetChat,
 }: ChatPageHeaderProps) {
@@ -57,7 +55,7 @@ export default function ChatPageHeader({
     <header className="bg-gradient-to-r from-cyan-300 to-blue-400 text-black shadow-md border-b-4 border-black p-2 font-pixel">
       <div className="container mx-auto flex justify-end items-center">
         {/* Desktop Menu */}
-        <nav className="hidden md:flex space-x-1 items-center">{menuItems}</nav>
+        <nav className="hidden md:flex space-x-1 items-end">{menuItems}</nav>
 
         {/* Mobile Menu Button */}
         <div className="md:hidden">
