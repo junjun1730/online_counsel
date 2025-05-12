@@ -9,6 +9,7 @@ import {
   HistoryMessage,
   ChatApiRequest,
 } from "../..//action/chat";
+import ChatPageHeader from "../component/ChatPageHeader";
 
 export default function ChatPage() {
   const searchParams = useSearchParams();
@@ -28,7 +29,6 @@ export default function ChatPage() {
   const {
     mutate: sendMessage,
     // useSendChatMessage 훅에서 isLoading 상태를 가져옵니다.
-    error: apiError, // 변수 이름 변경 (기존 error와 충돌 방지)
     isPending,
   } = useSendChatMessage({
     onSuccess: (newBotMessage) => {
@@ -86,23 +86,12 @@ export default function ChatPage() {
   }, [lastBotMessage?.part[0]?.text]); // 마지막 봇 메시지 텍스트가 변경될 때 스크롤
 
   return (
-    <div className="retro-container flex flex-col h-screen w-full md:max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto border-8 border-yellow-400 shadow-2xl bg-[#2d3748] overflow-hidden">
-      {/* 헤더 */}
-      <div className="flex justify-between items-center p-3 bg-purple-700 text-yellow-300 border-b-4 border-yellow-400 shadow-md">
-        <h1
-          className="text-2xl md:text-3xl font-bold tracking-wider"
-          style={{ fontFamily: "'Press Start 2P', cursive" }}
-        >
-          {selectedCharacter}와(과) 상담중
-        </h1>
-        <button
-          onClick={() => setShowModal(true)}
-          className="px-4 py-2 bg-yellow-400 text-purple-700 rounded-md border-2 border-purple-900 hover:bg-yellow-500 active:bg-yellow-600 shadow-md hover:shadow-lg transition-all text-sm font-semibold"
-          style={{ fontFamily: "'Press Start 2P', cursive" }}
-        >
-          대화 목록
-        </button>
-      </div>
+    <div className="retro-container flex flex-col h-screen w-full md:max-w-2xl lg:max-w-3xl xl:max-w-4xl mx-auto  shadow-2xl bg-[#2d3748] overflow-hidden">
+      <ChatPageHeader
+        characterName={selectedCharacter}
+        onShowHistory={() => setShowModal(true)}
+        onResetChat={() => setMessages([])}
+      />
 
       {/* 모달 */}
       <ChatHistoryModal
@@ -112,32 +101,26 @@ export default function ChatPage() {
       />
 
       {/* 이미지 + 말풍선 */}
-      <div
-        className="relative flex-1 bg-blue-900/30 overflow-hidden p-4 bg-cover bg-center"
-        style={{ backgroundImage: "url('/assets/img/retro_bg_pattern.png')" }}
-      >
-        {" "}
+      <div className="relative flex-1 bg-gray-400 overflow-hidden p-4">
         {/* 예시 배경 이미지 패턴 */}
         <Image
           src={botImage}
           alt={selectedCharacter}
-          width={180} // 크기 조정
-          height={180} // 크기 조정
-          className="absolute bottom-5 right-5 z-10 drop-shadow-[0_5px_5px_rgba(0,0,0,0.4)] object-contain" // 캐릭터 이미지 스타일
+          width={400} // 이미지 크기 증가
+          height={400} // 이미지 크기 증가
+          className="absolute bottom-0 left-0 z-10 object-contain" // z-index 수정
           priority // LCP 요소일 경우
         />
         {/* 말풍선 컨테이너, ref를 여기에 연결합니다. */}
         <div
           ref={speechBubbleRef}
-          className="absolute bottom-28 left-4 right-4 px-4"
+          className="absolute bottom-10 left-4 right-4 px-4 z-20" // z-index 추가 및 위치 조정
         >
           {/* 마지막 상담사 메시지가 있을 경우에만 말풍선을 표시합니다. */}
           {lastBotMessage && (
             <div
-              // 이 div는 항상 "마지막 상담사 메시지"를 표시하므로, 메시지 내용이나 고유 ID를 key로 사용할 수 있습니다.
-              // 여기서는 메시지 텍스트를 기반으로 간단한 key를 생성합니다. (더 견고한 ID가 있다면 그것을 사용하세요)
               key={`bot-msg-${lastBotMessage.part[0]?.text.slice(0, 20)}`}
-              className="bg-gray-200 text-black rounded-lg p-4 shadow-lg max-h-48 overflow-y-auto overflow-x-hidden text-base border-4 border-gray-700 leading-relaxed" // 말풍선 스타일
+              className="bg-white text-black rounded-md p-3 shadow-md min-h-40 overflow-y-auto overflow-x-hidden text-sm border-2 border-gray-500 leading-normal" // 스타일 변경
               style={{
                 scrollbarWidth: "thin", // Firefox 스크롤바 스타일
                 scrollbarColor: "#f1c40f #34495e", // Firefox 스크롤바 색상 (thumb track)
@@ -150,7 +133,7 @@ export default function ChatPage() {
       </div>
 
       {/* 입력창 */}
-      <div className="p-4 border-t-4 border-yellow-400 bg-purple-700">
+      <div className="p-4 border-t-2 min-h-30 border-gray-500 bg-gray-200">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -163,23 +146,18 @@ export default function ChatPage() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="상담 내용을 입력하세요..."
-            className="flex-1 p-3 bg-gray-200 text-black border-2 border-gray-700 rounded-md focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none placeholder-gray-500 font-mono text-base disabled:opacity-70"
+            className="flex-1 p-2 bg-white text-black border border-gray-400 rounded-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none placeholder-gray-500 text-sm disabled:opacity-70"
             disabled={isPending}
           />
           <button
             type="submit"
-            className="px-6 py-3 bg-green-500 text-white rounded-md border-2 border-green-700 hover:bg-green-600 active:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg font-bold text-lg"
-            style={{ fontFamily: "'Press Start 2P', cursive" }}
+            className="px-5 py-2 bg-blue-500 text-white rounded-sm border border-blue-700 hover:bg-blue-600 active:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm font-semibold text-sm"
+            // style={{ fontFamily: "'Press Start 2P', cursive" }} // 픽셀 폰트 제거 또는 변경
             disabled={isPending}
           >
             {isPending ? "전송중..." : "전송"}
           </button>
         </form>
-        {apiError && (
-          <p className="text-red-400 text-sm mt-2 font-mono text-center">
-            오류: {apiError.message}
-          </p>
-        )}
       </div>
     </div>
   );

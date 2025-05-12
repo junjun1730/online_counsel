@@ -59,7 +59,6 @@ export const apiSendChatMessage = async (
 export const useSendChatMessage = (
   options?: UseMutationOptions<ChatApiResponse, Error, ChatApiRequest>
 ) => {
-  console.log(options);
   return useMutation<ChatApiResponse, Error, ChatApiRequest>({
     mutationFn: apiSendChatMessage,
     ...options,

@@ -26,16 +26,16 @@ export default function ChatHistoryModal({
 
   return (
     // 모달 배경은 투명하게, 대신 모달 컨텐츠에 배경색과 테두리 적용
-    <div className="fixed inset-0 flex justify-center items-center z-50 p-4 bg-black/80 backdrop-blur-sm">
-      <div className="bg-purple-700 p-5 rounded-lg w-full max-w-sm md:max-w-lg lg:max-w-xl shadow-2xl border-4 border-yellow-400 text-yellow-300">
+    <div className="fixed inset-0 flex justify-center items-center z-50 p-4 bg-black/60 backdrop-blur-xs">
+      <div className="bg-gray-100 p-5 rounded-md w-full max-w-sm md:max-w-lg lg:max-w-xl shadow-xl border-2 border-gray-400 text-gray-800">
         <h2
-          className="text-2xl font-bold mb-5 text-center"
-          style={{ fontFamily: "'Press Start 2P', cursive" }}
+          className="text-xl font-bold mb-4 text-center text-gray-700"
+          // style={{ fontFamily: "'Press Start 2P', cursive" }} // 픽셀 폰트 제거 또는 변경
         >
           대화 목록
         </h2>
         <ul
-          className="space-y-3 max-h-60 md:max-h-80 lg:max-h-[500px] overflow-y-auto overflow-x-hidden p-3 bg-purple-800/70 rounded-md border-2 border-yellow-500/80"
+          className="space-y-2 max-h-60 md:max-h-80 lg:max-h-[500px] overflow-y-auto overflow-x-hidden p-2 bg-white rounded border border-gray-300"
           style={{ scrollbarColor: "#f1c40f #4a044e" }}
         >
           {/* thumb track for firefox */}
@@ -47,11 +47,11 @@ export default function ChatHistoryModal({
                   ? `${m.role}-${idx}-${m.part[0].text.slice(0, 10)}`
                   : `${m.role}-${idx}`
               }
-              className="text-base border-b-2 border-yellow-500/40 pb-2 mb-2 break-words leading-snug"
+              className="text-sm border-b border-gray-200 pb-1.5 mb-1.5 break-words leading-normal"
             >
               <span
                 className={`font-bold ${
-                  m.role === "user" ? "text-green-400" : "text-pink-400"
+                  m.role === "user" ? "text-blue-600" : "text-green-600"
                 }`}
               >
                 [{m.role === "user" ? "나" : "상담사"}]:
@@ -64,8 +64,8 @@ export default function ChatHistoryModal({
         <div className="mt-6 text-center">
           <button
             onClick={onClose}
-            className="px-8 py-3 bg-yellow-400 text-purple-800 rounded-md border-2 border-purple-900 hover:bg-yellow-500 active:bg-yellow-600 shadow-md hover:shadow-lg transition-all font-bold text-lg"
-            style={{ fontFamily: "'Press Start 2P', cursive" }}
+            className="px-6 py-2 bg-gray-500 text-white rounded-sm border border-gray-600 hover:bg-gray-600 active:bg-gray-700 shadow-sm font-semibold text-sm"
+            // style={{ fontFamily: "'Press Start 2P', cursive" }} // 픽셀 폰트 제거 또는 변경
           >
             닫기
           </button>
