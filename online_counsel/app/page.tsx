@@ -38,7 +38,7 @@ export default function Home() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
+    <div className="relative min-h-screen max-w-5xl m-auto">
       {/* Background Transition */}
       <AnimatePresence mode="wait">
         <motion.div
