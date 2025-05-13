@@ -9,6 +9,7 @@ export type ChatMessagePart = {
 };
 
 // 메시지 객체에 고유 ID 필드 추가 고려 (key 관리 및 상태 업데이트 용이)
+export type ResponseMessage = string;
 export type HistoryMessage = {
   id?: string; // 백엔드에서 고유 ID를 부여하거나 프론트에서 생성
   role: "user" | "model";
@@ -30,8 +31,10 @@ export type ChatApiResponse = HistoryMessage;
  * @returns API 응답 (새로운 model 메시지)
  */
 export const apiSendChatMessage = async (
-  requestData: ChatApiRequest
-): Promise<ChatApiResponse> => {
+  requestDataWithTempId: ChatApiRequest & { tempId: string }
+): Promise<ResponseMessage> => {
+  const { tempId, ...requestData } = requestDataWithTempId;
+
   try {
     const response = await fetch(CHAT_API_URL, {
       method: "POST",
@@ -45,19 +48,23 @@ export const apiSendChatMessage = async (
     if (!response.ok) {
       let errorMessage = `API request failed with status ${response.status}`;
       try {
-        // 에러 응답 본문이 JSON 형태일 경우 상세 메시지 추출 시도
-        const errorData = await response.json();
-        errorMessage =
-          errorData.message || JSON.stringify(errorData) || errorMessage;
+        const contentType = response.headers.get("Content-Type");
+        if (contentType?.includes("application/json")) {
+          const errorData = await response.json();
+          errorMessage =
+            errorData.message || JSON.stringify(errorData) || errorMessage;
+        } else {
+          const errorText = await response.text();
+          errorMessage = errorText || errorMessage;
+        }
       } catch (parseError) {
-        // 응답 본문 파싱 실패 시 (JSON이 아닐 경우 등) 기본 에러 메시지 사용
         console.error("Failed to parse error response body:", parseError);
       }
       throw new Error(errorMessage);
     }
 
     // 성공 시 응답 JSON 파싱 (ChatApiResponse 타입으로 가정)
-    return response.json() as Promise<ChatApiResponse>;
+    return response.text();
   } catch (error) {
     // 네트워크 에러 또는 위에서 throw된 에러 처리
     console.error("API call failed:", error);
@@ -74,17 +81,13 @@ export const apiSendChatMessage = async (
  */
 export const useSendChatMessage = (
   options?: UseMutationOptions<
-    ChatApiResponse,
+    string,
     Error,
     ChatApiRequest & { tempId: string }
   > // tempId 포함
 ) => {
   // 명시적으로 제네릭 타입을 지정하여 타입 안정성 강화
-  return useMutation<
-    ChatApiResponse,
-    Error,
-    ChatApiRequest & { tempId: string }
-  >({
+  return useMutation<string, Error, ChatApiRequest & { tempId: string }>({
     mutationFn: apiSendChatMessage,
     ...options, // 컴포넌트에서 전달된 onSuccess, onError 등 옵션 적용
   });

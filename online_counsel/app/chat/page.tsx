@@ -34,7 +34,8 @@ export default function ChatPage() {
   const [apiError, setApiError] = useState<string | null>(null); // API 에러 상태
   const chatAreaRef = useRef<HTMLDivElement | null>(null); // 채팅 영역 전체 ref (스크롤용)
 
-  const characterNameFromQuery = searchParams.get("characterName") || "상담사";
+  const characterNameFromQuery =
+    searchParams.get("characterNameId") || "상담사";
   const characterImageFromQuery =
     searchParams.get("characterImage") || "/assets/img/default_bot.png";
   const characterBgImage =
@@ -43,11 +44,13 @@ export default function ChatPage() {
   const botImage = characterImageFromQuery;
   const selectedCharacter = characterNameFromQuery;
 
-  const {
-    mutate: sendMessage,
-    isPending, // isLoading -> isPending 으로 변경 (React Query v5 기준)
-  } = useSendChatMessage({
-    onSuccess: (newBotMessage) => {
+  const { mutate: sendMessage, isPending } = useSendChatMessage({
+    onSuccess: (botResponseText) => {
+      const newBotMessage: DisplayMessage = {
+        role: "model",
+        part: [{ text: botResponseText }],
+        // id나 tempId는 선택 사항
+      };
       setApiError(null); // 성공 시 에러 메시지 초기화
       setMessages((prevMessages) => [...prevMessages, newBotMessage]);
     },
@@ -76,10 +79,16 @@ export default function ChatPage() {
       tempId: tempId, // 메시지에 임시 ID 추가
     };
 
-    // Optimistic Update: 사용자 메시지를 즉시 화면에 추가
-    // API 요청 history에는 tempId 없는 확정된 메시지만 사용
-    const currentHistory = messages.filter((msg) => !msg.tempId);
     setMessages((prevMessages) => [...prevMessages, userMessage]);
+
+    // history에는 방금 작성한 메시지도 포함
+    const currentHistory: HistoryMessage[] = [
+      ...messages.filter((msg) => !msg.tempId),
+      {
+        role: "user",
+        part: [{ text: input }],
+      },
+    ];
 
     // API 요청 데이터 구성 (tempId 포함하여 onError에서 롤백 시 사용)
     const requestData: ChatApiRequest & { tempId: string } = {

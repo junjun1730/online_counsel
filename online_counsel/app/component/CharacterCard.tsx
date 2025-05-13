@@ -23,7 +23,7 @@ export default function CharacterCard({
 
   return (
     // Link 컴포넌트로 감싸서 클릭 시 채팅 페이지로 이동
-    <Link href={chatUrl} legacyBehavior>
+    <Link href={chatUrl}>
       <a className="block cursor-pointer bg-gradient-to-br from-pink-200 to-purple-200 rounded-lg shadow-md p-4 hover:shadow-lg transition w-full sm:w-60 border-4 border-purple-400 hover:border-pink-500 transform hover:-translate-y-1 font-pixel">
         {/* next/image 사용 */}
         <div className="relative w-full h-40 mb-3 border-2 border-black rounded overflow-hidden bg-white">

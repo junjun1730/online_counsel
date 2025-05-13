@@ -8,18 +8,14 @@ import { motion, AnimatePresence } from "framer-motion";
 const characters = [
   {
     name: "70대 교회 목사님",
+    nameId: "PRIEST",
     description: "따뜻하고 인자한 말투로 인생 상담을 해주는 목사님",
     image: "/assets/img/3.png",
     background: "/assets/img/bg3.png",
   },
   {
-    name: "30대 비즈니스맨",
-    description: "속도감 있고 날카로운 조언을 해주는 커리어 전문가",
-    image: "/assets/img/1.png",
-    background: "/assets/img/bg1.png",
-  },
-  {
     name: "정 많은 할머니",
+    nameId: "NUN",
     description: "사투리가 섞인 푸근한 조언을 해주는 이웃집 할머니",
     image: "/assets/img/2.png",
     background: "/assets/img/bg2.png",
@@ -113,8 +109,8 @@ export default function Home() {
 
         {/* 상담 시작 버튼 */}
         <Link
-          href={`/chat?characterName=${encodeURIComponent(
-            currentChar.name
+          href={`/chat?characterNameId=${encodeURIComponent(
+            currentChar.nameId
           )}&characterImage=${encodeURIComponent(currentChar.image)}`}
           passHref
         >
